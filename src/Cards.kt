@@ -31,6 +31,11 @@ class Cards(cardsFileName : String){
         cardsDealt = 0
     }
 
+    /**
+     * Retrieve the deck of cards from a file instead of a full random deck.
+     * @param cardsFileName the name of the file containing the deck
+     * @see getCard(...)
+     */
     fun fillDeckOfCardsFromFile(cardsFileName : String){
         var fileContent : String = ""
         var cardsFromFile : MutableList<String> = arrayListOf()
@@ -41,36 +46,49 @@ class Cards(cardsFileName : String){
             throw Exception("Error reading file: $cardsFileName")
         }
         for(card in fileContent.split(",", "\n"))
-            cardsFromFile.add(getCard(card.replace("\n", "")))
+            cardsFromFile.add(getCard(card.replace("\n", "")
+                            .filter { !it.isWhitespace()}))
         cards = cardsFromFile
         //println(fileContent)
 
     }
+
+    /**
+     * Retrieve the card if it is a valid card.
+     * @param card the possible card
+     * @throws Exception if the card is invalid
+     */
     fun getCard(card : String) : String{
 
-        var possibleCard : String = card.filter { !it.isWhitespace()}
+        var possibleCard : String = card //.filter { !it.isWhitespace()}
 
         var tempCard = ""
-        if(card.isNotEmpty() && (possibleCard[0] == 'C' || possibleCard[0] == 'D' ||
-            possibleCard[0] == 'H' || possibleCard[0] == 'S')){
+        try{
+            if(card.isNotEmpty() && (possibleCard[0] == 'C' || possibleCard[0] == 'D' ||
+                        possibleCard[0] == 'H' || possibleCard[0] == 'S')){
 
-            tempCard += possibleCard[0]
+                tempCard += possibleCard[0]
 
-            if(possibleCard.length > 2 && possibleCard.substring(1,3) == "10"){
+                if(possibleCard.length > 2 && possibleCard.substring(1,3) == "10"){
 
-                tempCard += "10"
-            }
-            else if(possibleCard.length == 2){
-                if (possibleCard[1] == 'J' || possibleCard[1] == 'Q' ||
-                    possibleCard[1] == 'K' || possibleCard[1] == 'A' ||
-                    possibleCard[1].digitToInt() in 2..9){
+                    tempCard += "10"
+                }
+                else if(possibleCard.length == 2){
+                    if (possibleCard[1] == 'J' || possibleCard[1] == 'Q' ||
+                        possibleCard[1] == 'K' || possibleCard[1] == 'A' ||
+                        possibleCard[1].digitToInt() in 2..9){
                         tempCard += possibleCard[1]
+                    }
                 }
             }
+            if(tempCard.length < 2){ // The card is not complete
+                throw Exception()
+            }
+        }catch (e : Exception){
+            throw Exception("Invalid card: $card")
         }
-        if(tempCard.length < 2){
-            throw Exception("Invalid card: $card -${card[2]}- ${card.length}")
-        }
+
+
         println("$tempCard")
         return tempCard // Either of length 2 or 3 (tens)
     }
