@@ -9,12 +9,30 @@ class Blackjack(cardsFileName : String){
 
     //var dealer : String = "Dealer"
     init {
-        var winner = playGame()
-        print("The winner is: ")
-        if(winner == Winner.PLAYER)
-            println(player.playerName)
-        else
-            println(dealer.playerName)
+        var p1 = 0
+        var p2 = 0
+        var winner : Winner
+        for(i in 1..100000){
+            if(i % 10000 == 0)
+                println(i)
+            winner = playGame()
+            //print("The winner is: ")
+            if(winner == Winner.PLAYER){
+                //println(player.playerName)
+                p1++
+            }
+
+            else{
+                //println(dealer.playerName)
+                p2++
+            }
+            cards.fillDeckOfCardsAndShuffle("")
+            player = Player("Sam")     ///< The player trying his luck
+            dealer = Player("Dealer")  ///< The dealer
+        }
+        println("$p1 ---- $p2")
+
+
     }
 
     /**
@@ -33,8 +51,8 @@ class Blackjack(cardsFileName : String){
              **/
             playDealersTurn()
         }
-        player.printCardsOnHand()
-        dealer.printCardsOnHand()
+        //player.printCardsOnHand()
+        //dealer.printCardsOnHand()
         return returnWinner()
 
 
@@ -116,9 +134,9 @@ class Blackjack(cardsFileName : String){
          */
         updateParticipantScore(player)
         updateParticipantScore(dealer)
-        player.printCardsOnHand()
-        dealer.printCardsOnHand()
-        println("-------------------------------")
+        //player.printCardsOnHand()
+        //dealer.printCardsOnHand()
+        //println("-------------------------------")
     }
 
     /**
