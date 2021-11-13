@@ -1,3 +1,5 @@
+import java.lang.NumberFormatException
+
 /**
  * Deck of cards.
  */
@@ -21,18 +23,45 @@ class Cards{
          */
         for(i in this.cards.indices){
             if(i < 13) // Clubs
-                cards[i] = "C" + (i+1).toString()
+                cards[i] = "C" + getFaceOfCard(i+1).toString()
             else if(i < 26)// Diamonds
-                cards[i] = "D" + ((i % 13)+1).toString()
+                cards[i] = "D" + getFaceOfCard((i % 13)+1).toString()
             else if(i < 39) // Hearts
-                cards[i] = "H" + ((i % 26)+1).toString()
+                cards[i] = "H" + getFaceOfCard((i % 26)+1).toString()
             else            // Spades
-                cards[i] = "S" + ((i % 39)+1).toString()
+                cards[i] = "S" + getFaceOfCard((i % 39)+1).toString()
+
         }
+        shuffleCards() // Randomize the cards
+        cardsDealt = 0
+    }
+
+    /**
+     * Get the face of the card.
+     * @param face which card
+     * @return face
+     * @throws exception if the card number is invalid.
+     */
+    fun getFaceOfCard(face : Int) : String{
+        if(face in 2..10){
+            return face.toString()
+        }
+        else{
+            when(face){
+                11 -> return "J"
+                12 -> return "Q"
+                13 -> return "K"
+                1 -> return "A"
+            }
+            throw Exception("Invalid card")
+        }
+    }
+
+    /**
+     * Shuffle the cards.
+     */
+    fun shuffleCards(){
         cards.shuffle() // Shuffles the cards, randomizing the order.
-        cardsDealt = 0  // The cards are now shuffled.
-        /*for(card in cards)
-            println(card)*/
     }
 
     /**

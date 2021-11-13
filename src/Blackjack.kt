@@ -10,7 +10,8 @@ class Blackjack {
     //var dealer : String = "Dealer"
     init {
         var winner = playGame()
-        if(winner == 1)
+        print("The winner is: ")
+        if(winner == Winner.PLAYER)
             println(player.playerName)
         else
             println(dealer.playerName)
@@ -20,23 +21,17 @@ class Blackjack {
      * Start a new game of blackjack.
      * @return The winner of the game
      */
-    fun playGame() : Int{
+    fun playGame() : Winner{
         initialDeal()
-        //player.printCardsOnHand()
-        //dealer.printCardsOnHand()
-        if(returnWinner() == 0){
+        if(returnWinner() == Winner.NOBODY){
             /**
              * The player goes first
              */
             playPlayersTurn()
-            //player.printCardsOnHand()
-
             /**
              * Dealer is next
              **/
             playDealersTurn()
-            //dealer.printCardsOnHand()
-
         }
         player.printCardsOnHand()
         dealer.printCardsOnHand()
@@ -50,18 +45,24 @@ class Blackjack {
      * Retrieve the score from the card.
      * @param card the card dealt to either the player or dealer
      * @return  score of the card
+     * @throws exception if the card face is invalid.
      */
     fun getScoreFromCard(card : String) : Int {
-        var digits = card.substring(1, card.length).toInt() // Retrieve the digits from the card.
+        var digits : Int
+        var cardFace = card.substring(1, card.length)
 
-        if(digits in 1..13){
-            if(digits > 9) // 10, Knight, queen, king
-                return 10
-            else if(digits == 1)    // Ace
-                return 11
-            return digits // 1 < digits < 10
+        if(cardFace == "J" || cardFace == "Q" || cardFace == "K")
+            return 10
+        else if(cardFace == "A")
+            return 11
+        else{
+            digits = cardFace.toInt()
+            if(digits in 2..10)
+                return digits
+            else
+                throw Exception("Invalid card!")
         }
-        throw Exception("Invalid card: $card") // Should never happen
+
     }
 
     /**
@@ -88,7 +89,7 @@ class Blackjack {
      * The dealer draws cards.
      */
      fun playDealersTurn(){
-        while (dealer.playerScore < player.playerScore && dealer.playerScore <= Consts.ULTIMATESCORE){
+        while (player.playerScore < 21 && dealer.playerScore <= player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE){
             dealer.drawCard(cards.pullCard())
             updateParticipantScore(dealer)
         }
@@ -122,23 +123,23 @@ class Blackjack {
 
     /**
      * Return the winner of the game, if someone has won.
-     * @return 1 the player has won
-     * @return 2 the dealer has won
-     * @return 0 No one has won
+     * @return Winner.PLAYER the player has won
+     * @return Winner.DEALER the dealer has won
+     * @return Winner.NOBODY No one has won
      */
-    fun returnWinner() : Int {
+    fun returnWinner() : Winner {
         if(player.cardsOnHand.size + dealer.cardsOnHand.size > 4){
-            if(player.playerScore > 21 || (dealer.playerScore > player.playerScore && dealer.playerScore <= 21))
-                return 2
+            if(player.playerScore > Consts.WINNINGSCORE || (dealer.playerScore > player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE))
+                return Winner.DEALER
             else
-                return 1
+                return Winner.PLAYER
         }
-        else{
-            if(player.playerScore + dealer.playerScore == 22*2)
-                return 2
+        else{ // Initial deal. Two cards each.
+            if(player.playerScore == Consts.WINNINGSCORE)
+                return Winner.PLAYER
+            else if(player.playerScore + dealer.playerScore == 22*2 || dealer.playerScore == Consts.WINNINGSCORE)
+                return Winner.DEALER
         }
-        return 0
-
-
+        return Winner.NOBODY
     }
 }

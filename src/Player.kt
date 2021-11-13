@@ -1,3 +1,6 @@
+/**
+ * The participants of the game.
+ */
 class Player(name : String) {
     var playerName : String = name
     var cardsOnHand : MutableList<String> = arrayListOf() ///< The cards a player is holding
@@ -6,13 +9,13 @@ class Player(name : String) {
 
     fun drawCard(card : String){
         cardsOnHand.add(card)
-        printCardsOnHand()
+        //printCardsOnHand()
     }
 
     fun printCardsOnHand(){
-        println("$playerName cards: ")
+        println("$playerName cards:")
         for(card in cardsOnHand){
-            println(card)
+            print(" $card,")
         }
         println(playerScore)
     }
