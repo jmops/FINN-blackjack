@@ -27,7 +27,7 @@ class Cards(cardsFileName : String){
         else{
             fillNewDeckOfCards()
         }
-        shuffleCards() // Randomize the cards
+        cards.shuffle() // Shuffles the cards, randomizing the order.
         cardsDealt = 0
     }
 
@@ -65,15 +65,15 @@ class Cards(cardsFileName : String){
         var tempCard = ""
         try{
             if(card.isNotEmpty() && (possibleCard[0] == 'C' || possibleCard[0] == 'D' ||
-                        possibleCard[0] == 'H' || possibleCard[0] == 'S')){
+                        possibleCard[0] == 'H' || possibleCard[0] == 'S')){ // Correct suit
 
                 tempCard += possibleCard[0]
 
-                if(possibleCard.length > 2 && possibleCard.substring(1,3) == "10"){
+                if(possibleCard.length > 2 && possibleCard.substring(1,3) == "10"){ // 10 digit
 
                     tempCard += "10"
                 }
-                else if(possibleCard.length == 2){
+                else if(possibleCard.length == 2){ // Is either a knight, queen, king, ace or a digit in the 2-9 range
                     if (possibleCard[1] == 'J' || possibleCard[1] == 'Q' ||
                         possibleCard[1] == 'K' || possibleCard[1] == 'A' ||
                         possibleCard[1].digitToInt() in 2..9){
@@ -87,9 +87,6 @@ class Cards(cardsFileName : String){
         }catch (e : Exception){
             throw Exception("Invalid card: $card")
         }
-
-
-        println("$tempCard")
         return tempCard // Either of length 2 or 3 (tens)
     }
 
@@ -134,12 +131,6 @@ class Cards(cardsFileName : String){
         }
     }
 
-    /**
-     * Shuffle the cards.
-     */
-    fun shuffleCards(){
-        cards.shuffle() // Shuffles the cards, randomizing the order.
-    }
 
     /**
      * Pull a card from the deck.

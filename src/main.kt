@@ -6,11 +6,6 @@
 
 fun main(args : Array<String>){
     var game : Blackjack
-    //game = Blackjack(args[0])
-    println("${args.size}")
-    for(i in args){
-        println("$i ---- ${args.size}")
-    }
 
     try{
         if(args.isNotEmpty()){
