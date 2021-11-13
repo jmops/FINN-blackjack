@@ -1,39 +1,98 @@
-import java.lang.NumberFormatException
+import java.io.File
+import java.io.InputStream
+import java.time.temporal.Temporal
 
 /**
  * Deck of cards.
  */
-class Cards{
+class Cards(cardsFileName : String){
     /**
      * Each card is represented by a string. e.g. the string C13 would be the king of clubs.
      */
-    var cards :  Array<String> = Array<String>(52){""}
+    var cards :  MutableList<String> = arrayListOf()
     var cardsDealt = 0 // Index of the next card
 
     init {
-        fillDeckOfCardsAndShuffle()
+        fillDeckOfCardsAndShuffle(cardsFileName)
     }
 
     /**
      * Fill the array holding all the cards.
      */
-    fun fillDeckOfCardsAndShuffle(){
-        /**
-         * There are 52 cards, 13 clubs, diamonds, heart and spades, in total 52 cards. Each interval of 13 is one suit.
-         */
-        for(i in this.cards.indices){
-            if(i < 13) // Clubs
-                cards[i] = "C" + getFaceOfCard(i+1).toString()
-            else if(i < 26)// Diamonds
-                cards[i] = "D" + getFaceOfCard((i % 13)+1).toString()
-            else if(i < 39) // Hearts
-                cards[i] = "H" + getFaceOfCard((i % 26)+1).toString()
-            else            // Spades
-                cards[i] = "S" + getFaceOfCard((i % 39)+1).toString()
+    fun fillDeckOfCardsAndShuffle(cardsFileName : String){
 
+        if(cardsFileName.isNotEmpty()){
+            fillDeckOfCardsFromFile(cardsFileName)
+        }
+        else{
+            fillNewDeckOfCards()
         }
         shuffleCards() // Randomize the cards
         cardsDealt = 0
+    }
+
+    fun fillDeckOfCardsFromFile(cardsFileName : String){
+        var fileContent : String = ""
+        var cardsFromFile : MutableList<String> = arrayListOf()
+        try{
+            File(cardsFileName).forEachLine {fileContent = it}
+        }
+        catch (e : Exception) {
+            throw Exception("Error reading file: $cardsFileName")
+        }
+        for(card in fileContent.split(",", "\n"))
+            cardsFromFile.add(getCard(card.replace("\n", "")))
+        cards = cardsFromFile
+        //println(fileContent)
+
+    }
+    fun getCard(card : String) : String{
+
+        var possibleCard : String = card.filter { !it.isWhitespace()}
+
+        var tempCard = ""
+        if(card.isNotEmpty() && (possibleCard[0] == 'C' || possibleCard[0] == 'D' ||
+            possibleCard[0] == 'H' || possibleCard[0] == 'S')){
+
+            tempCard += possibleCard[0]
+
+            if(possibleCard.length > 2 && possibleCard.substring(1,3) == "10"){
+
+                tempCard += "10"
+            }
+            else if(possibleCard.length == 2){
+                if (possibleCard[1] == 'J' || possibleCard[1] == 'Q' ||
+                    possibleCard[1] == 'K' || possibleCard[1] == 'A' ||
+                    possibleCard[1].digitToInt() in 2..9){
+                        tempCard += possibleCard[1]
+                }
+            }
+        }
+        if(tempCard.length < 2){
+            throw Exception("Invalid card: $card -${card[2]}- ${card.length}")
+        }
+        println("$tempCard")
+        return tempCard // Either of length 2 or 3 (tens)
+    }
+
+    /**
+     * Fill up the deck of cards with 52 cards.
+     */
+    fun fillNewDeckOfCards(){
+        /**
+         * There are 52 cards, 13 clubs, diamonds, heart and spades, in total 52 cards. Each interval of 13 is one suit.
+         */
+        for(i in 0..51){
+            if(i < 13) // Clubs
+                cards.add("C" + getFaceOfCard(i+1).toString())
+            else if(i < 26)// Diamonds
+                cards.add("D" + getFaceOfCard((i % 13)+1).toString())
+            else if(i < 39) // Hearts
+                cards.add("H" + getFaceOfCard((i % 26)+1).toString())
+            else            // Spades
+                cards.add("S" + getFaceOfCard((i % 39)+1).toString())
+
+        }
     }
 
     /**
@@ -73,7 +132,7 @@ class Cards{
                 return cards[cardsDealt++] // Retrieve the next card, increment counter
         }
         else
-            fillDeckOfCardsAndShuffle() // All cards are spent, re-shuffle
+            fillDeckOfCardsAndShuffle("") // All cards are spent, re-shuffle
             return pullCard()           // Try again
     }
 }

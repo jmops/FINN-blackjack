@@ -2,8 +2,8 @@
  * The game blackjack.
  *
  */
-class Blackjack {
-    var cards : Cards = Cards() ///< The deck of cards used
+class Blackjack(cardsFileName : String){
+    var cards : Cards = Cards(cardsFileName) ///< The deck of cards used
     var player : Player = Player("Sam")     ///< The player trying his luck
     var dealer : Player = Player("Dealer")  ///< The dealer
 
