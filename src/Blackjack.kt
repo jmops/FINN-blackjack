@@ -7,22 +7,11 @@ class Blackjack(cardsFileName : String){
     var player : Player = Player("Sam")     ///< The player trying his luck
     var dealer : Player = Player("Dealer")  ///< The dealer
 
-    //var dealer : String = "Dealer"
     init {
-        var winner : Winner = playGame()
-            print("The winner is: ")
-            if(winner == Winner.PLAYER){
-                println(player.playerName)
-            }
 
-            else{
-                println(dealer.playerName)
-            }
-            cards.fillDeckOfCardsAndShuffle("")
-            player = Player("Sam")     ///< The player trying his luck
-            dealer = Player("Dealer")  ///< The dealer
-
-
+            player = Player("Sam")
+            dealer = Player("Dealer")
+            initialDeal()
     }
 
     /**
@@ -30,7 +19,6 @@ class Blackjack(cardsFileName : String){
      * @return The winner of the game
      */
     fun playGame() : Winner{
-        initialDeal()
         if(returnWinner() == Winner.NOBODY){
             /**
              * The player goes first
@@ -41,12 +29,26 @@ class Blackjack(cardsFileName : String){
              **/
             playDealersTurn()
         }
-        player.printCardsOnHand()
-        dealer.printCardsOnHand()
+
+        printWinnerAndCardOnHands(returnWinner())
+
         return returnWinner()
 
 
 
+    }
+
+    /**
+     * Print out the name of the winner, and all cards on hand.
+     * @param winner
+     */
+    private fun printWinnerAndCardOnHands(winner: Winner){
+        when(winner){
+            Winner.PLAYER -> print(player.playerName)
+            Winner.DEALER -> print(dealer.playerName)
+        }
+        player.printCardsOnHand()
+        dealer.printCardsOnHand()
     }
 
     /**
@@ -55,18 +57,18 @@ class Blackjack(cardsFileName : String){
      * @return  score of the card
      * @throws exception if the card face is invalid.
      */
-    fun getScoreFromCard(card : String) : Int {
+    private fun getScoreFromCard(card : String) : Int {
         var digits : Int
         var cardFace = card.substring(1, card.length)
 
-        if(cardFace == "J" || cardFace == "Q" || cardFace == "K")
-            return 10
+        return if(cardFace == "J" || cardFace == "Q" || cardFace == "K")
+            10
         else if(cardFace == "A")
-            return 11
+            11
         else{
             digits = cardFace.toInt()
             if(digits in 2..10)
-                return digits
+                digits
             else
                 throw Exception("Invalid card!")
         }
@@ -76,7 +78,7 @@ class Blackjack(cardsFileName : String){
     /**
      * Update the score of the player based on what cards the player hold.
      */
-    fun updateParticipantScore(participant : Player){
+    private fun updateParticipantScore(participant : Player){
         participant.playerScore = 0
         for(card in participant.cardsOnHand){
             participant.playerScore += getScoreFromCard(card)
@@ -86,7 +88,7 @@ class Blackjack(cardsFileName : String){
     /**
      * the player draws cards.
      */
-    fun playPlayersTurn(){
+    private fun playPlayersTurn(){
         while(player.playerScore < Consts.PLAYERSTOPDRAWINGSCORE){
             player.drawCard(cards.pullCard())
             updateParticipantScore(player)
@@ -96,8 +98,8 @@ class Blackjack(cardsFileName : String){
     /**
      * The dealer draws cards.
      */
-     fun playDealersTurn(){
-        while (player.playerScore < 21 && dealer.playerScore <= player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE){
+    private fun playDealersTurn(){
+        while (player.playerScore < Consts.WINNINGSCORE && dealer.playerScore <= player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE){
             dealer.drawCard(cards.pullCard())
             updateParticipantScore(dealer)
         }
@@ -106,7 +108,7 @@ class Blackjack(cardsFileName : String){
     /**
      * Deal out the initial hand of cards to both the dealer and the player.
      */
-    fun initialDeal(){
+    private fun initialDeal(){
         /**
          * Create the initial hand of cards for both the player and dealer.
          * Pulled in the following order: player, dealer, player, dealer
@@ -120,13 +122,10 @@ class Blackjack(cardsFileName : String){
             }
         }
         /**
-         * Update all participant's score
+         * Update score
          */
         updateParticipantScore(player)
         updateParticipantScore(dealer)
-        player.printCardsOnHand()
-        dealer.printCardsOnHand()
-        //println("-------------------------------")
     }
 
     /**

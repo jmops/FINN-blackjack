@@ -4,19 +4,24 @@
  * @author Jørgen Mo Opsahl
  */
 
+/**
+ * Main:
+ * @param args Arguments
+ */
 fun main(args : Array<String>){
     var game : Blackjack
-
     try{
-        if(args.isNotEmpty()){
-            game = Blackjack(args[0])
-        }
-        else{
-            game = Blackjack("")
-        }
+        game = if(args.isNotEmpty())
+            Blackjack(args[0])
+         else
+            Blackjack("")
+
+        game.playGame()
     }
     catch (e : Exception){
         println(e)
     }
+
+
 
 }

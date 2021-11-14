@@ -7,40 +7,42 @@ import java.time.temporal.Temporal
  */
 class Cards(cardsFileName : String){
     /**
-     * Each card is represented by a string. e.g. the string C13 would be the king of clubs.
+     * Each card is a string. The string C13 would be the king of clubs etc.
      */
-    var cards :  MutableList<String> = arrayListOf()
-    var cardsDealt = 0 // Index of the next card
+    private var cards :  MutableList<String> = arrayListOf() ///< The deck of cards
+    private var cardsDealt = 0 ///< Index of the next card
 
     init {
         fillDeckOfCardsAndShuffle(cardsFileName)
     }
 
     /**
-     * Fill the array holding all the cards.
+     * Fill the list with cards. Fill up a complete deck, or create a deck from a file.
+     * @param cardsFileName A possible filename for cards.
      */
-    fun fillDeckOfCardsAndShuffle(cardsFileName : String){
+    private fun fillDeckOfCardsAndShuffle(cardsFileName : String){
 
         if(cardsFileName.isNotEmpty()){
             fillDeckOfCardsFromFile(cardsFileName)
         }
         else{
             fillNewDeckOfCards()
+            cards.shuffle() // Shuffles the cards, randomizing the order.
         }
-        cards.shuffle() // Shuffles the cards, randomizing the order.
         cardsDealt = 0
     }
+
 
     /**
      * Retrieve the deck of cards from a file instead of a full random deck.
      * @param cardsFileName the name of the file containing the deck
      * @see getCard(...)
      */
-    fun fillDeckOfCardsFromFile(cardsFileName : String){
-        var fileContent : String = ""
+    private fun fillDeckOfCardsFromFile(cardsFileName : String){
+        var fileContent = ""
         var cardsFromFile : MutableList<String> = arrayListOf()
         try{
-            File(cardsFileName).forEachLine {fileContent = it}
+            File(cardsFileName).forEachLine {fileContent = it} // Everything is on one line
         }
         catch (e : Exception) {
             throw Exception("Error reading file: $cardsFileName")
@@ -49,8 +51,6 @@ class Cards(cardsFileName : String){
             cardsFromFile.add(getCard(card.replace("\n", "")
                             .filter { !it.isWhitespace()}))
         cards = cardsFromFile
-        //println(fileContent)
-
     }
 
     /**
@@ -58,10 +58,8 @@ class Cards(cardsFileName : String){
      * @param card the possible card
      * @throws Exception if the card is invalid
      */
-    fun getCard(card : String) : String{
-
-        var possibleCard : String = card //.filter { !it.isWhitespace()}
-
+    private fun getCard(card : String) : String{
+        var possibleCard : String = card
         var tempCard = ""
         try{
             if(card.isNotEmpty() && (possibleCard[0] == 'C' || possibleCard[0] == 'D' ||
@@ -72,8 +70,10 @@ class Cards(cardsFileName : String){
                 if(possibleCard.length > 2 && possibleCard.substring(1,3) == "10"){ // 10 digit
 
                     tempCard += "10"
+
                 }
                 else if(possibleCard.length == 2){ // Is either a knight, queen, king, ace or a digit in the 2-9 range
+
                     if (possibleCard[1] == 'J' || possibleCard[1] == 'Q' ||
                         possibleCard[1] == 'K' || possibleCard[1] == 'A' ||
                         possibleCard[1].digitToInt() in 2..9){
@@ -93,20 +93,19 @@ class Cards(cardsFileName : String){
     /**
      * Fill up the deck of cards with 52 cards.
      */
-    fun fillNewDeckOfCards(){
+    private fun fillNewDeckOfCards(){
         /**
          * There are 52 cards, 13 clubs, diamonds, heart and spades, in total 52 cards. Each interval of 13 is one suit.
          */
-        for(i in 0..51){
-            if(i < 13) // Clubs
-                cards.add("C" + getFaceOfCard(i+1).toString())
-            else if(i < 26)// Diamonds
-                cards.add("D" + getFaceOfCard((i % 13)+1).toString())
-            else if(i < 39) // Hearts
-                cards.add("H" + getFaceOfCard((i % 26)+1).toString())
+        for(i in 1..52){
+            if(i < 14) // Clubs
+                cards.add("C" + getFaceOfCard(i).toString())
+            else if(i < 27)// Diamonds
+                cards.add("D" + getFaceOfCard((i % 14)+1).toString())
+            else if(i < 40) // Hearts
+                cards.add("H" + getFaceOfCard((i % 27)+1).toString())
             else            // Spades
-                cards.add("S" + getFaceOfCard((i % 39)+1).toString())
-
+                cards.add("S" + getFaceOfCard((i % 40)+1).toString())
         }
     }
 
@@ -116,7 +115,7 @@ class Cards(cardsFileName : String){
      * @return face
      * @throws exception if the card number is invalid.
      */
-    fun getFaceOfCard(face : Int) : String{
+    private fun getFaceOfCard(face : Int) : String{
         if(face in 2..10){
             return face.toString()
         }
@@ -127,21 +126,20 @@ class Cards(cardsFileName : String){
                 13 -> return "K"
                 1 -> return "A"
             }
-            throw Exception("Invalid card")
+            throw Exception("Invalid card: $face")
         }
     }
 
-
     /**
      * Pull a card from the deck.
-     * @return the card OR null if there are no more cards.
+     * @return the card.
+     * @throws Exception if there's no more cards.
      */
     fun pullCard() : String {
-        if(cardsDealt < 52){
+        if(cardsDealt < cards.size){
                 return cards[cardsDealt++] // Retrieve the next card, increment counter
         }
         else
-            fillDeckOfCardsAndShuffle("") // All cards are spent, re-shuffle
-            return pullCard()           // Try again
+            throw Exception("No more cards in the deck. ($cardsDealt used.")
     }
 }

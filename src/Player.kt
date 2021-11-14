@@ -2,7 +2,7 @@
  * The participants of the game.
  */
 class Player(name : String) {
-    var playerName : String = name
+    var playerName : String = name ///< Name of player
     var cardsOnHand : MutableList<String> = arrayListOf() ///< The cards a player is holding
     var playerScore : Int = 0   ///< The player's score
 
@@ -12,17 +12,15 @@ class Player(name : String) {
      */
     fun drawCard(card : String){
         cardsOnHand.add(card)
-        //printCardsOnHand()
     }
 
     /**
      * Print all the cards the player is holding.
      */
     fun printCardsOnHand(){
-        println("$playerName cards:")
+        print("\n$playerName: ")
         for(card in cardsOnHand){
             print(" $card,")
         }
-        println(playerScore)
     }
 }
