@@ -46,7 +46,9 @@ class Blackjack(cardsFileName : String){
         when(winner){
             Winner.PLAYER -> print(player.playerName)
             Winner.DEALER -> print(dealer.playerName)
+            else -> throw Exception()
         }
+
         player.printCardsOnHand()
         dealer.printCardsOnHand()
     }

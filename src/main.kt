@@ -19,7 +19,7 @@ fun main(args : Array<String>){
         game.playGame()
     }
     catch (e : Exception){
-        println(e)
+        println("Something went wrong:\n$e")
     }
 
 
