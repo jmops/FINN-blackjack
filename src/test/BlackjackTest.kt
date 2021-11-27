@@ -5,7 +5,9 @@ class BlackjackTest {
     @Test
     fun playerWinsAfterInitialDeal(){
         var game = Blackjack("src/test/PlayerWinsAfterInitialDeal.dta")
-        assertEquals(Winner.PLAYER, game.returnWinner())
+
+        assertEquals(Winner.PLAYER, game.playGame())
+        assertEquals(4, game.numberOfCardsDealt())
     }
     @Test
     fun playerWins(){

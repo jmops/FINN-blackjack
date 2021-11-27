@@ -1,5 +1,5 @@
 /**
- * This application lets a player play against the dealer in a game of blackjack (21).
+ * This application lets a player (Sam)  play against the dealer in a game of blackjack (21).
  *
  * @author Jørgen Mo Opsahl
  */
@@ -11,15 +11,15 @@
 fun main(args : Array<String>){
     var game : Blackjack
     try{
-        game = if(args.isNotEmpty())
+        game = if(args.isNotEmpty()) // Filename given
             Blackjack(args[0])
-         else
-            Blackjack("")
+         else                        // No filename given
+            Blackjack()
 
         game.playGame()
     }
     catch (e : Exception){
-        println("Something went wrong:\n$e")
+        println("Something went wrong:\n${e.message}")
     }
 
 

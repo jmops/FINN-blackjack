@@ -5,7 +5,7 @@ import java.time.temporal.Temporal
 /**
  * Deck of cards.
  */
-class Cards(cardsFileName : String){
+class Cards(cardsFileName : String? = null){
     /**
      * Each card is a string. The string C13 would be the king of clubs etc.
      */
@@ -20,9 +20,9 @@ class Cards(cardsFileName : String){
      * Fill the list with cards. Fill up a complete deck, or create a deck from a file.
      * @param cardsFileName A possible filename for cards.
      */
-    private fun fillDeckOfCardsAndShuffle(cardsFileName : String){
+    private fun fillDeckOfCardsAndShuffle(cardsFileName : String?){
 
-        if(cardsFileName.isNotEmpty()){
+        if(cardsFileName != null){
             fillDeckOfCardsFromFile(cardsFileName)
         }
         else{

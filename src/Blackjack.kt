@@ -2,24 +2,21 @@
  * The game blackjack.
  *
  */
-class Blackjack(cardsFileName : String){
-    var cards : Cards = Cards(cardsFileName) ///< The deck of cards used
-    var player : Player = Player("Sam")     ///< The player trying his luck
-    var dealer : Player = Player("Dealer")  ///< The dealer
+class Blackjack(cardsFileName : String? = null){
+    private var cards : Cards = Cards(cardsFileName) ///< The deck of cards used
+    private var player : Player = Player("Sam")     ///< The player trying his luck
+    private var dealer : Player = Player("Dealer")  ///< The dealer
+    private var initialCardsDealt = false
 
-    init {
-
-            player = Player("Sam")
-            dealer = Player("Dealer")
-            initialDeal()
-    }
 
     /**
      * Start a new game of blackjack.
      * @return The winner of the game
      */
     fun playGame() : Winner{
+        initialDeal()
         if(returnWinner() == Winner.NOBODY){
+            initialCardsDealt = true
             /**
              * The player goes first
              */
@@ -43,14 +40,15 @@ class Blackjack(cardsFileName : String){
      * @param winner
      */
     private fun printWinnerAndCardOnHands(winner: Winner){
+        print("And the winner is: ")
         when(winner){
             Winner.PLAYER -> print(player.playerName)
             Winner.DEALER -> print(dealer.playerName)
-            else -> throw Exception()
+            else -> {
+                throw Exception("Ohh no, there should be a winner at this point...")
+            }
         }
-
-        player.printCardsOnHand()
-        dealer.printCardsOnHand()
+        printCardsOnHandsAndScore()
     }
 
     /**
@@ -131,17 +129,25 @@ class Blackjack(cardsFileName : String){
     }
 
     /**
+     * Print out the cards for both the player and the dealer.
+     */
+    private fun printCardsOnHandsAndScore(){
+        player.printCardsOnHandAndScore()
+        dealer.printCardsOnHandAndScore()
+    }
+
+    /**
      * Return the winner of the game, if someone has won.
      * @return Winner.PLAYER the player has won
      * @return Winner.DEALER the dealer has won
      * @return Winner.NOBODY No one has won
      */
-    fun returnWinner() : Winner {
-        if(player.cardsOnHand.size + dealer.cardsOnHand.size > 4){
-            if(player.playerScore > Consts.WINNINGSCORE || (dealer.playerScore > player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE))
-                return Winner.DEALER
+    private fun returnWinner() : Winner {
+        if(initialCardsDealt){
+            return if(player.playerScore > Consts.WINNINGSCORE || (dealer.playerScore > player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE))
+                Winner.DEALER
             else
-                return Winner.PLAYER
+                Winner.PLAYER
         }
         else{ // Initial deal. Two cards each.
             if(player.playerScore == Consts.WINNINGSCORE)
@@ -150,5 +156,8 @@ class Blackjack(cardsFileName : String){
                 return Winner.DEALER
         }
         return Winner.NOBODY
+    }
+    fun numberOfCardsDealt() : Int{
+        return player.cardsOnHand.size + dealer.cardsOnHand.size
     }
 }

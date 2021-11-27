@@ -7,7 +7,7 @@ class CardsTest {
     @Test
     fun fillDeckOfCardsAndShuffle() {
         var testCards : MutableList<String> = arrayListOf()
-        val cards : Cards = Cards("")
+        val cards : Cards = Cards()
         for(i in 1..52){
             testCards.add(cards.pullCard())
         }

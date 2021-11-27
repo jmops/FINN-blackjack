@@ -17,10 +17,11 @@ class Player(name : String) {
     /**
      * Print all the cards the player is holding.
      */
-    fun printCardsOnHand(){
+    fun printCardsOnHandAndScore(){
         print("\n$playerName: ")
         for(card in cardsOnHand){
             print(" $card,")
         }
+        print("\nScore: $playerScore")
     }
 }
