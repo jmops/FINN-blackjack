@@ -3,9 +3,9 @@
  *
  */
 class Blackjack(cardsFileName : String? = null){
-    private var cards : Cards = Cards(cardsFileName) ///< The deck of cards used
-    private var player : Player = Player("Sam")     ///< The player trying his luck
-    private var dealer : Player = Player("Dealer")  ///< The dealer
+    private var cards : Cards = Cards(cardsFileName)              ///< The deck of cards used
+    private var player : Player = Player(Consts.PLAYERNAME)       ///< The player trying his luck
+    private var dealer : Player = Player("Dealer")          ///< The dealer
     private var initialCardsDealt = false
 
 
@@ -16,7 +16,7 @@ class Blackjack(cardsFileName : String? = null){
     fun playGame() : Winner{
         initialDeal()
         if(returnWinner() == Winner.NOBODY){
-            initialCardsDealt = true
+            initialCardsDealt = true // The initial stage is done
             /**
              * The player goes first
              */
@@ -30,9 +30,6 @@ class Blackjack(cardsFileName : String? = null){
         printWinnerAndCardOnHands(returnWinner())
 
         return returnWinner()
-
-
-
     }
 
     /**
@@ -99,7 +96,7 @@ class Blackjack(cardsFileName : String? = null){
      * The dealer draws cards.
      */
     private fun playDealersTurn(){
-        while (player.playerScore < Consts.WINNINGSCORE && dealer.playerScore <= player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE){
+        while (player.playerScore < Consts.PERFECTSCORE && dealer.playerScore <= player.playerScore && dealer.playerScore <= Consts.PERFECTSCORE){
             dealer.drawCard(cards.pullCard())
             updateParticipantScore(dealer)
         }
@@ -144,18 +141,25 @@ class Blackjack(cardsFileName : String? = null){
      */
     private fun returnWinner() : Winner {
         if(initialCardsDealt){
-            return if(player.playerScore > Consts.WINNINGSCORE || (dealer.playerScore > player.playerScore && dealer.playerScore <= Consts.WINNINGSCORE))
+            /**
+             * Initial cards are already dealt.
+             * If the player's score is higher than the perfect score, or the dealer has a higher score than the player (but not above the perfect score) the dealer wins, otherwise the player wins.
+             */
+            return if(player.playerScore > Consts.PERFECTSCORE || (dealer.playerScore > player.playerScore && dealer.playerScore <= Consts.PERFECTSCORE))
                 Winner.DEALER
             else
                 Winner.PLAYER
         }
         else{ // Initial deal. Two cards each.
-            if(player.playerScore == Consts.WINNINGSCORE)
+            if(player.playerScore == Consts.PERFECTSCORE)
                 return Winner.PLAYER
-            else if(player.playerScore + dealer.playerScore == 22*2 || dealer.playerScore == Consts.WINNINGSCORE)
+            /**
+             * If the dealer and player both got two aces as their initial cards, or the dealer got a perfect score, the dealer wins.
+             */
+            else if(player.playerScore + dealer.playerScore == 22*2 || dealer.playerScore == Consts.PERFECTSCORE)
                 return Winner.DEALER
         }
-        return Winner.NOBODY
+        return Winner.NOBODY // No winner yet, only applicable during the initial card dealing.
     }
     fun numberOfCardsDealt() : Int{
         return player.cardsOnHand.size + dealer.cardsOnHand.size
