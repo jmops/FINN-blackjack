@@ -23,6 +23,6 @@ The user can provide their own deck of cards by passing a filename containing th
 A fresh deck of card is created and shuffled if the user did not "bring" their own deck. 
 
 ## Score
-Numbered cards are their own point value
-Jack, Queen and King counts as 10 points
-Ace counts as 11 points. 
+- Numbered cards are their own point value
+- Jack, Queen and King counts as 10 points
+- Ace counts as 11 points. 
