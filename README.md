@@ -29,8 +29,14 @@ Ace counts as 11 points.
 
 ## How to run
 - Move into the src directory
-cd src/
+```
+  cd src/
+```
 - Compile the code
-kotlinc *.kt -include-runtime -d Kotlinjack.jar
+```
+  kotlinc *.kt -include-runtime -d Kotlinjack.jar
+```
 - Run the code
-java -jar Kotlinjack.jar
+```
+  java -jar Kotlinjack.jar
+```
