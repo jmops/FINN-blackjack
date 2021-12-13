@@ -25,4 +25,12 @@ A fresh deck of card is created and shuffled if the user did not "bring" their o
 ## Score
 Numbered cards are their own point value
 Jack, Queen and King counts as 10 points
-Ace counts as 11 points. 
+Ace counts as 11 points.
+
+## How to run
+- Move into the src directory
+cd src/
+- Compile the code
+kotlinc *.kt -include-runtime -d Kotlinjack.jar
+- Run the code
+java -jar Kotlinjack.jar
